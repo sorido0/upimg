@@ -2,13 +2,17 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { subirImagenen } from "./api/upload/cloudinary";
 
 export default function paginaIniciar() {
+    
+    const [archivo, setArchivo] = useState(null)
 
-    const [archivo, setArchivo] = useState()
+    const handerOnChange = ({ target }) => {
 
-    const handerOnChange = (e) => {
-        setArchivo(e.target.files[0])
+        if (!target.files) return console.log('No hay archivo')
+        console.log(target.files)
+        setArchivo(target.files[0])
     }
 
     const handelSubmit = async (e) => {
@@ -16,24 +20,12 @@ export default function paginaIniciar() {
 
         e.preventDefault()
 
-        if (!archivo) return
-
-        // esto es para creae un formdata en jes para enviar la data de la imagen
-        const form = new FormData()
-        form.set('archivo', archivo)
-
-        // se envia la data al api
-        const resp = await fetch('/api/upload',
-            {
-                method: 'POST',
-                body: form
-            }
-        )
-
-        const data = await resp.json()
-        console.log(data)
+        if (!archivo) return console.log('No hay archivo')
+   
+        const urlimagen = await subirImagenen(archivo)
 
 
+        console.log(urlimagen)
     }
 
 
@@ -46,16 +38,17 @@ export default function paginaIniciar() {
             >
                 <h1 className="text-white text-center text-4xl my-4"> Subir imagen </h1>
 
-                <input 
+                <input
                     type="file"
+                    multiple
                     className="bg-zinc-900 text-zinc-100 p-2 round block mb-2"
                     onChange={handerOnChange}
                 />
 
 
-                <button type="submit" 
-                        className="rounded-full bg-green-500 h-10 w-full block p-2 disabled:opacity-50 hover:bg-green-600 text-white"
-                        disabled={!archivo}    
+                <button type="submit"
+                    className="rounded-full bg-green-500 h-10 w-full block p-2 disabled:opacity-50 hover:bg-green-600 text-white"
+                    disabled={!archivo}
                 >
                     Subir
                 </button>
@@ -63,7 +56,7 @@ export default function paginaIniciar() {
 
             {
                 archivo && (
-                    <Image 
+                    <Image
                         src={URL.createObjectURL(archivo)}
                         alt="imagen"
                         width={300}
