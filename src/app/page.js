@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import Image from "next/image";
 import { subirImagenen } from "./api/upload/cloudinary";
 
-export default function paginaIniciar() {
+export default function PaginaIniciar() {
     
     const [archivo, setArchivo] = useState(null)
 
