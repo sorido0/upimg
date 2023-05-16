@@ -3,31 +3,38 @@
 import { useState } from "react";
 import Image from "next/image";
 import { subirImagenen } from "./api/upload/cloudinary";
+import fubiBien from "./components/subiBIen";
+
 
 export default function PaginaIniciar() {
-    
+
     const [archivo, setArchivo] = useState(null)
+    const [urlimagen, setUrlimagen] = useState("")
 
     const handerOnChange = ({ target }) => {
 
         if (!target.files) return console.log('No hay archivo')
-        console.log(target.files)
+        // console.log(target.files)
         setArchivo(target.files[0])
     }
-
+    
     const handelSubmit = async (e) => {
-
-
+        
+        
         e.preventDefault()
-
+        
         if (!archivo) return console.log('No hay archivo')
-   
-        const urlimagen = await subirImagenen(archivo)
-
-
-        console.log(urlimagen)
+        
+        const url = await subirImagenen(archivo)
+        
+        setUrlimagen(url)
+        setArchivo(null)
+        fubiBien()
+        
+        return ""
     }
 
+   
 
     return (
         <div className="flex h-screen justify-center items-center flex-col">
@@ -43,6 +50,7 @@ export default function PaginaIniciar() {
                     multiple
                     className="bg-zinc-900 text-zinc-100 p-2 round block mb-2"
                     onChange={handerOnChange}
+
                 />
 
 
@@ -65,6 +73,10 @@ export default function PaginaIniciar() {
                     />
                 )
             }
+            {
+                urlimagen ? <span className="text-white text-center text-sm my-4"> {urlimagen} </span> : null
+            }
+
         </div>
     )
 }
